@@ -1,14 +1,25 @@
 version: '3'
 
 services:
-  wordpress-app:
-    image: wyveo/nginx-php-fpm:latest
+  wordpress-nginx:
+    build: ./.docker/nginx
+    restart: "no"
     ports:
       - "8081:80"
     volumes:
-      - ./:/usr/share/nginx/html
+      - ./:/var/www
+    depends_on:
+      - wordpress-app
+
+  wordpress-app:
+    build: .
+    ports:
+      - "8090:80"
+    volumes:
+      - ./:/var/www
     depends_on:
       - wordpress-db
+      - wordpress-adminer
 
   wordpress-db:
     image: mariadb:10.3
